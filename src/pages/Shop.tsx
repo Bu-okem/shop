@@ -1,11 +1,11 @@
 import DefaultLayout from '../layouts/DefaultLayout';
 
-const Home = () => {
+const Shop = () => {
   return (
     <DefaultLayout>
-      <h3>Home</h3>
+      <h3>Shop</h3>
     </DefaultLayout>
   );
 };
 
-export default Home;
+export default Shop;

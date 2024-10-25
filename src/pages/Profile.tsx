@@ -1,11 +1,10 @@
 import DefaultLayout from '../layouts/DefaultLayout';
-
-const Home = () => {
+const Profile = () => {
   return (
     <DefaultLayout>
-      <h3>Home</h3>
+      <h3>Profile</h3>
     </DefaultLayout>
   );
 };
 
-export default Home;
+export default Profile;
