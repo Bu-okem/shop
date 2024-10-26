@@ -1,12 +1,14 @@
 import React from 'react';
 import Nav from '../components/Nav';
+import Footer from '../components/Footer';
 
 const DefaultLayout = ({ children }: React.PropsWithChildren) => {
   return (
-    <div>
+    <>
       <Nav />
-      <main className="p-4">{children}</main>
-    </div>
+      <main className="">{children}</main>
+      <Footer />
+    </>
   );
 };
 
