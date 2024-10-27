@@ -69,7 +69,7 @@ const Nav = () => {
             onClick={() => setOpen(!open)}
           />
           <img src={Logo} alt="" className="h-[16px] w-[100px]" />
-          <div className="flex gap-4">
+          <div className="hidden lg:flex gap-4">
             {desktopNavItems.map((item, index) => {
               return (
                 <Link to={item.link} className="text-base" key={index}>

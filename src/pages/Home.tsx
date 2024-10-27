@@ -1,7 +1,10 @@
 import DefaultLayout from '../layouts/DefaultLayout';
 
+import ProductCard from '../components/ProductCard';
+
 import HeroImageMobile from '../assets/images/hero-image-mobile.png';
 import HeroImage from '../assets/images/hero-image.png';
+import ProductImage from '../assets/images/jean-trousers.png';
 
 const Home = () => {
   return (
@@ -26,7 +29,38 @@ const Home = () => {
           <img src={HeroImage} alt="" className="w-full hidden lg:block" />
         </div>
       </section>
-      {/*  */}
+      {/* #499428 */}
+      <section className="max-w-7xl w-full mx-auto">
+        <h2 className="text-2xl lg:text-4xl font-familjen-grotesk font-bold text-center text-black uppercase mt-10 mb-5 ">
+          Products
+        </h2>
+        <div className="p-4 grid grid-cols-2 lg:grid-cols-4 gap-y-4 justify-items-center">
+          <ProductCard
+            image={ProductImage}
+            name="Product Name"
+            price="3000"
+            link="/product"
+          />
+          <ProductCard
+            image={ProductImage}
+            name="Product Name That is Long"
+            price="3000"
+            link="/product"
+          />
+          <ProductCard
+            image={ProductImage}
+            name="Product Name"
+            price="3000"
+            link="/product"
+          />
+          <ProductCard
+            image={ProductImage}
+            name="Product Name"
+            price="3000"
+            link="/product"
+          />
+        </div>
+      </section>
     </DefaultLayout>
   );
 };
