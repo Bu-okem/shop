@@ -31,6 +31,10 @@ const Nav = () => {
       name: 'Shop',
       link: '/shop',
     },
+    {
+      name: 'Orders',
+      link: '/orders',
+    },
   ];
   const desktopNavItems = [
     {
@@ -42,7 +46,7 @@ const Nav = () => {
     <nav className="">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div
-          className={`h-screen w-52 p-4 fixed top-0 bg-white duration-300 lg:hidden ${
+          className={`h-screen w-52 p-4 fixed top-0 bg-white duration-300 lg:hidden z-50 ${
             open ? 'left-0' : '-left-full'
           }`}>
           <X

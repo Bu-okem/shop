@@ -61,8 +61,8 @@ const Footer = () => {
               wear. From women to men.
             </p>
             <div className="mb-6 flex gap-2">
-              {socials.map((icon) => (
-                <img src={icon} alt="" className="cursor-pointer" />
+              {socials.map((icon, index) => (
+                <img key={index} src={icon} alt="" className="cursor-pointer" />
               ))}
             </div>
           </div>
