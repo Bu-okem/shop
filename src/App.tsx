@@ -13,24 +13,27 @@ import SentOrders from './pages/SentOrders';
 import ScrollToTop from './components/ScrollToTop';
 
 import { UserProvider } from './contexts/UserContext';
+import { CartProvider } from './contexts/CartContext';
 
 export default function App() {
   return (
     <BrowserRouter>
       <UserProvider>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/product" element={<ProductPage />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/orders" element={<Orders />}>
-            <Route index element={<SentOrders />} />
-            <Route path="cancelled" element={<CancelledOrders />} />
-          </Route>
-        </Routes>
+        <CartProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/:slug" element={<ProductPage />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/orders" element={<Orders />}>
+              <Route index element={<SentOrders />} />
+              <Route path="cancelled" element={<CancelledOrders />} />
+            </Route>
+          </Routes>
+        </CartProvider>
       </UserProvider>
       <ScrollToTop />
     </BrowserRouter>

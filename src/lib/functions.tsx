@@ -33,3 +33,16 @@ export const getProducts = async () => {
     console.error(error);
   }
 };
+
+export const getProductById = async (id: string) => {
+  try {
+    let response = await database.getDocument(
+      Database_ID, // databaseId
+      Products_Collection_ID, // collectionId
+      id
+    );
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};

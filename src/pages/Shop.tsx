@@ -9,7 +9,7 @@ import { getProducts } from '../lib/functions';
 import { slugify } from '../lib/utils';
 
 const Shop = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [products, setProducts] = useState<
     Models.Document[] | undefined | null
@@ -39,7 +39,7 @@ const Shop = () => {
         ) : (
           <div className="p-4 lg:flex">
             <div className="hidden w-1/5 lg:block">
-              <h3 className="font-bold text-3xl">Casual</h3>
+              <h3 className="font-bold text-3xl">Shop</h3>
             </div>
             <div className="max-w-[925px] grow grid justify-items-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-4">
               {products?.map((product, index) => (
@@ -48,7 +48,7 @@ const Shop = () => {
                   image={product.imageUrls[0]}
                   name={product.title}
                   price={product.price}
-                  link={`${slugify(product.title)}-${product.$id}`}
+                  link={`/${slugify(product.title)}-${product.$id}`}
                 />
               ))}
             </div>
