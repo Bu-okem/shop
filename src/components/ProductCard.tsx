@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+import { addCommas } from '../lib/utils';
 const ProductCard = ({
   image,
   name,
@@ -8,7 +9,7 @@ const ProductCard = ({
 }: {
   image: string;
   name: string;
-  price: string;
+  price: number;
   link: string;
 }) => {
   return (
@@ -17,7 +18,7 @@ const ProductCard = ({
         <img src={image} alt="" className="rounded-xl" />
       </div>
       <h5 className="font-bold mt-3 truncate">{name}</h5>
-      <p className="text-black text-[1.2rem]">₦{price}</p>
+      <p className="text-black text-[1.2rem]">₦{addCommas(price)}</p>
     </Link>
   );
 };

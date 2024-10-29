@@ -1,77 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Models } from 'appwrite';
 
 import DefaultLayout from '../layouts/DefaultLayout';
 import ProductCard from '../components/ProductCard';
 import LoadingPage from '../components/LoadingPage';
 
-import ProductImage from '../assets/images/jean-trousers.png';
-import ProductImage2 from '../assets/images/jean-shorts.png';
+import { getProducts } from '../lib/functions';
+import { slugify } from '../lib/utils';
 
 const Shop = () => {
   const [loading, setLoading] = useState(false);
-  const products = [
-    {
-      image: ProductImage,
-      name: 'Jean Trousers',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage,
-      name: 'Jean Trousers',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage,
-      name: 'Jean Trousers',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage,
-      name: 'Jean Trousers',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      price: '23,000',
-      link: '/product',
-    },
 
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      price: '23,000',
-      link: '/product',
-    },
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      price: '23,000',
-      link: '/product',
-    },
-  ];
+  const [products, setProducts] = useState<
+    Models.Document[] | undefined | null
+  >(null);
+  const fetchProducts = async () => {
+    try {
+      const product = await getProducts();
+      console.log(product);
+      setProducts(product);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <DefaultLayout>
       <div className="max-w-7xl w-full mx-auto mb-20">
@@ -85,13 +42,13 @@ const Shop = () => {
               <h3 className="font-bold text-3xl">Casual</h3>
             </div>
             <div className="max-w-[925px] grow grid justify-items-center grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-4">
-              {products.map((product, index) => (
+              {products?.map((product, index) => (
                 <ProductCard
                   key={index}
-                  image={product.image}
-                  name={product.name}
+                  image={product.imageUrls[0]}
+                  name={product.title}
                   price={product.price}
-                  link={product.link}
+                  link={`${slugify(product.title)}-${product.$id}`}
                 />
               ))}
             </div>
