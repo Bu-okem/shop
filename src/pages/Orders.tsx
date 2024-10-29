@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
 import DefaultLayout from '../layouts/DefaultLayout';
+import LoadingPage from '../components/LoadingPage';
 
 /**
  * The Orders page component.
@@ -16,39 +17,46 @@ import DefaultLayout from '../layouts/DefaultLayout';
  */
 const Orders = () => {
   const [activeTab, setActiveTab] = useState('sent');
+  const [loading, setLoading] = useState(false);
   return (
     <DefaultLayout>
       <div className="max-w-7xl mx-auto">
         <h3 className="pl-4 fond-bold font-familjen-grotesk text-2xl">
           Orders
         </h3>
-        <div className="p-4 my-8">
-          <div className=" border-b border-[#F0F0F0] flex gap-4">
-            <Link
-              to="/orders"
-              className={`pb-2 relative top-px ${
-                activeTab === 'sent'
-                  ? 'font-bold border-b-2 border-b-black'
-                  : ''
-              }`}
-              onClick={() => setActiveTab('sent')}>
-              Sent
-            </Link>
-            <Link
-              to="/orders/cancelled"
-              className={`pb-2 relative top-px ${
-                activeTab === 'cancelled'
-                  ? 'font-bold border-b-2 border-b-black'
-                  : ''
-              }`}
-              onClick={() => setActiveTab('cancelled')}>
-              Cancelled
-            </Link>
+        {loading ? (
+          <div className="h-[70vh]">
+            <LoadingPage />
           </div>
-          <div className="py-2">
-            <Outlet />
+        ) : (
+          <div className="p-4 my-8">
+            <div className=" border-b border-[#F0F0F0] flex gap-4">
+              <Link
+                to="/orders"
+                className={`pb-2 relative top-px ${
+                  activeTab === 'sent'
+                    ? 'font-bold border-b-2 border-b-black'
+                    : ''
+                }`}
+                onClick={() => setActiveTab('sent')}>
+                Sent
+              </Link>
+              <Link
+                to="/orders/cancelled"
+                className={`pb-2 relative top-px ${
+                  activeTab === 'cancelled'
+                    ? 'font-bold border-b-2 border-b-black'
+                    : ''
+                }`}
+                onClick={() => setActiveTab('cancelled')}>
+                Cancelled
+              </Link>
+            </div>
+            <div className="py-2 min-h-[40vh]">
+              <Outlet />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </DefaultLayout>
   );

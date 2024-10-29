@@ -78,7 +78,10 @@ const Nav = () => {
           <div className="hidden lg:flex gap-4">
             {desktopNavItems.map((item, index) => {
               return (
-                <Link to={item.link} className="text-base" key={index}>
+                <Link
+                  to={item.link}
+                  className="text-base hover:underline"
+                  key={index}>
                   {item.name}
                 </Link>
               );
