@@ -72,7 +72,9 @@ const Nav = () => {
             className="h-[16px] w-[16px] cursor-pointer lg:hidden"
             onClick={() => setOpen(!open)}
           />
-          <img src={Logo} alt="" className="h-[16px] w-[100px]" />
+          <Link to={'/'}>
+            <img src={Logo} alt="" className="h-[16px] w-[100px]" />
+          </Link>
           <div className="hidden lg:flex gap-4">
             {desktopNavItems.map((item, index) => {
               return (

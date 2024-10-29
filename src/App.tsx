@@ -10,6 +10,8 @@ import Orders from './pages/Orders';
 import CancelledOrders from './pages/CancelledOrders';
 import SentOrders from './pages/SentOrders';
 
+import ScrollToTop from './components/ScrollToTop';
+
 import { UserProvider } from './contexts/UserContext';
 
 export default function App() {
@@ -30,6 +32,7 @@ export default function App() {
           </Route>
         </Routes>
       </UserProvider>
+      <ScrollToTop />
     </BrowserRouter>
   );
 }

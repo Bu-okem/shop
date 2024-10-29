@@ -55,13 +55,13 @@ const ProductPage = () => {
                 }}
               />
               {/* <input type="number" name="" id="" className="bg-[#F0F0F0] w-5" /> */}
-              <p className="text-black">{quantity}</p>
+              <p className="text-black select-none">{quantity}</p>
               <PlusIcon
                 className="cursor-pointer"
                 onClick={() => setQuantity(quantity + 1)}
               />
             </span>
-            <button className="bg-black text-white rounded-full w-full py-3">
+            <button className="bg-black text-white rounded-full w-full py-3 select-none">
               Add to Cart
             </button>
           </div>
