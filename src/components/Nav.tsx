@@ -90,9 +90,12 @@ const Nav = () => {
         </div>
         <div className="p-4 flex items-center gap-4">
           <Link to={'/cart'} className="block relative">
-            <span className="text-xs absolute -top-1 -right-1 bg-black text-white rounded-full w-4 h-4 flex items-center justify-center">
-              2
-            </span>
+            {JSON.parse(localStorage.getItem('cartItems') || '[]').length >
+              0 && (
+              <span className="text-xs absolute -top-1 -right-1 bg-black text-white rounded-full w-4 h-4 flex items-center justify-center">
+                {JSON.parse(localStorage.getItem('cartItems') || '[]').length}
+              </span>
+            )}
             <img src={CartIcon} alt="" />
           </Link>
           <span className="">

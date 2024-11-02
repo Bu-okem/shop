@@ -1,4 +1,4 @@
-import { Key, useEffect, useState } from 'react';
+import { Key, useContext, useEffect, useState } from 'react';
 import { Models } from 'appwrite';
 
 import { getProductById } from '../lib/functions';
@@ -7,9 +7,8 @@ import { addCommas } from '../lib/utils';
 import DefaultLayout from '../layouts/DefaultLayout';
 import LoadingPage from '../components/LoadingPage';
 
-import { PlusIcon, MinusIcon } from 'lucide-react';
+import CartContext from '../contexts/CartContext';
 const ProductPage = () => {
-  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<Models.Document | undefined | null>(
     null
@@ -25,7 +24,6 @@ const ProductPage = () => {
   const fetchProduct = async () => {
     try {
       const response = await getProductById(id);
-      console.log(response);
       setProduct(response);
       setLoading(false);
     } catch (error) {
@@ -36,6 +34,15 @@ const ProductPage = () => {
   useEffect(() => {
     fetchProduct();
   }, []);
+
+  const { addToCart } = useContext(CartContext) || {
+    addToCart: () => {},
+  };
+
+  const handleAddToCart = (product: any) => {
+    //add product to cart
+    addToCart(product);
+  };
 
   return (
     <DefaultLayout>
@@ -87,23 +94,9 @@ const ProductPage = () => {
                   </h4>
                 </div>
                 <div className="mb-7 p-4 flex gap-4">
-                  <span className="rounded-full bg-[#F0F0F0] w-28 lg:w-40 max-w-40 flex gap-4 items-center justify-between py-2 px-4">
-                    <MinusIcon
-                      className="cursor-pointer"
-                      onClick={() => {
-                        if (quantity > 1) {
-                          setQuantity(quantity - 1);
-                        }
-                      }}
-                    />
-                    {/* <input type="number" name="" id="" className="bg-[#F0F0F0] w-5" /> */}
-                    <p className="text-black select-none">{quantity}</p>
-                    <PlusIcon
-                      className="cursor-pointer"
-                      onClick={() => setQuantity(quantity + 1)}
-                    />
-                  </span>
-                  <button className="bg-black text-white rounded-full w-full py-3 select-none">
+                  <button
+                    className="bg-black text-white rounded-full w-full py-3 hover:bg-transparent hover:border-black hover:text-black border-2 border-black duration-300"
+                    onClick={() => handleAddToCart(product)}>
                     Add to Cart
                   </button>
                 </div>

@@ -1,35 +1,68 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import DefaultLayout from '../layouts/DefaultLayout';
 import CartItem from '../components/CartItem';
 import LoadingPage from '../components/LoadingPage';
 
-import ProductImage from '../assets/images/jean-trousers.png';
-import ProductImage2 from '../assets/images/jean-shorts.png';
+import CartContext from '../contexts/CartContext';
 
+import { addCommas } from '../lib/utils';
+
+interface CartItem {
+  $id: number;
+  imageUrls: string[];
+  title: string;
+  price: number;
+}
 const Cart = () => {
   const [loading, setLoading] = useState(false);
-  const cartItems: {
-    image: string;
-    name: string;
-    price: string;
-  }[] = [
-    {
-      image: ProductImage,
-      name: 'Product Name',
-      price: '12,000',
-    },
-    {
-      image: ProductImage2,
-      name: 'Product Name 2',
-      price: '8,000',
-    },
-    {
-      image: ProductImage2,
-      name: 'Product Name 3',
-      price: '8,000',
-    },
-  ];
+  const [discount, setDiscount] = useState(0);
+  const [quantity, setQuantity] = useState<{ [key: number]: number }>({});
+  const [cartTotal, setCartTotal] = useState(0);
+
+  const { cart } = useContext(CartContext) || {
+    addToCart: () => {},
+  };
+
+  const cartItems = cart?.map((item: CartItem) => ({
+    id: item.$id,
+    image: item.imageUrls[0],
+    title: item.title,
+    price: item.price,
+  }));
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    const initialQuantity: { [key: number]: number } = {};
+    cartItems?.forEach((item) => {
+      initialQuantity[item.id] = 1;
+    });
+    setQuantity(initialQuantity);
+  }, [cart]);
+
+  useEffect(() => {
+    // Calculate total whenever quantities change
+    const newTotal =
+      cartItems?.reduce((acc, item) => {
+        return acc + item.price * (quantity[item.id] || 1);
+      }, 0) || 0;
+    setCartTotal(newTotal);
+  }, [cart, quantity]);
+
+  const updateQuantity = (itemId: any, newQuantity: any) => {
+    setQuantity((prev) => ({ ...prev, [itemId]: newQuantity }));
+  };
+
+  useEffect(() => {
+    setDiscount(0.05);
+  }, []);
+  // const totalPrice = cartItems?.reduce((acc, item) => acc + item.price, 0) || 0;
   return (
     <DefaultLayout>
       <div className="max-w-7xl mx-auto">
@@ -43,7 +76,7 @@ const Cart = () => {
           </div>
         ) : (
           <>
-            {cartItems.length === 0 ? (
+            {cartItems?.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-[70vh]">
                 <p className="text-3xl font-bold text-gray-500">
                   Your cart is empty
@@ -52,16 +85,22 @@ const Cart = () => {
             ) : (
               <div className="mb-14 p-4 lg:mb-32 flex flex-col lg:flex-row gap-5">
                 <div className="px-4 rounded-2xl border border-[#F0F0F0] lg:grow lg:self-start">
-                  {cartItems.map((item, index) => (
+                  {cartItems?.map((item, index) => (
                     <div
+                      key={index}
                       className={`${
                         index !== 0 ? 'border-t border-[#F0F0F0]' : ''
                       }`}>
                       <CartItem
                         key={index}
+                        id={item.id}
                         image={item.image}
-                        name={item.name}
+                        title={item.title}
                         price={item.price}
+                        quantity={quantity[item.id] || 1}
+                        updateQuantity={(newQuantity: any) =>
+                          updateQuantity(item.id, newQuantity)
+                        }
                       />
                     </div>
                   ))}
@@ -70,15 +109,23 @@ const Cart = () => {
                   <h4 className="text-xl font-bold">Order Summary</h4>
                   <div className="flex justify-between">
                     <p className="text-gray-600">Subtotal</p>
-                    <p className="font-bold">₦12,000</p>
+                    <p className="font-bold">₦{addCommas(cartTotal)}</p>
                   </div>
-                  <div className="flex justify-between">
-                    <p className="text-gray-600">Discount(-20%)</p>
-                    <p className="font-bold text-red-500">-₦1,200</p>
-                  </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between">
+                      <p className="text-gray-600">
+                        Discount(-{discount * 100}%)
+                      </p>
+                      <p className="font-bold text-red-500">
+                        -₦{addCommas(cartTotal * discount)}
+                      </p>
+                    </div>
+                  )}
                   <div className="border-t border-[#F0F0F0] pt-4 pb-2 flex justify-between">
                     <p className="text-black">Total</p>
-                    <p className="font-bold text-xl">₦12,000</p>
+                    <p className="font-bold text-xl">
+                      ₦{addCommas(cartTotal - cartTotal * discount)}
+                    </p>
                   </div>
                   <div className="flex gap-2">
                     <input

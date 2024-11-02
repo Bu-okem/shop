@@ -17,7 +17,6 @@ const Shop = () => {
   const fetchProducts = async () => {
     try {
       const product = await getProducts();
-      console.log(product);
       setProducts(product);
       setLoading(false);
     } catch (error) {
