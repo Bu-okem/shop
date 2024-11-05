@@ -10,10 +10,12 @@ export const getUserDetails = async () => {
   try {
     let response = await account.get();
 
+    const id = response.$id;
     const name = response.name;
     const email = response.email;
 
     return {
+      id: id,
       name: name,
       email: email,
     };

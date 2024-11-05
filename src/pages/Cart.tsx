@@ -1,12 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
+import { ID } from 'appwrite';
 
 import DefaultLayout from '../layouts/DefaultLayout';
 import CartItem from '../components/CartItem';
 import LoadingPage from '../components/LoadingPage';
+import { PaystackConsumer } from 'react-paystack';
+import { databases } from '../appwriteconfig';
 
 import CartContext from '../contexts/CartContext';
 
 import { addCommas } from '../lib/utils';
+import { getUserDetails } from '../lib/functions';
 
 interface CartItem {
   $id: number;
@@ -14,11 +18,30 @@ interface CartItem {
   title: string;
   price: number;
 }
+
 const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [quantity, setQuantity] = useState<{ [key: number]: number }>({});
   const [cartTotal, setCartTotal] = useState(0);
+  const [userDetails, setUserDetails] = useState<
+    | {
+        id: string;
+        name: string;
+        email: string;
+      }
+    | undefined
+  >(undefined);
+
+  const fetchUserDetails = async () => {
+    try {
+      const details = await getUserDetails();
+      setUserDetails(details);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
 
   const { cart } = useContext(CartContext) || {
     addToCart: () => {},
@@ -60,9 +83,87 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    setDiscount(0.05);
+    setDiscount(0);
   }, []);
-  // const totalPrice = cartItems?.reduce((acc, item) => acc + item.price, 0) || 0;
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  const publicKey = 'pk_test_6a48efde02e1ff0911008c43a201f6a747e39a67';
+
+  const config: {
+    reference: string;
+    email: string | undefined;
+    amount: number;
+    publicKey: string;
+  } = {
+    reference: new Date().getTime().toString(),
+    email: userDetails?.email || '',
+    // amount is in kobo, hence the multiplication by 100
+    amount: discount > 0 ? cartTotal * (1 - discount) * 100 : cartTotal * 100,
+    publicKey: publicKey,
+  };
+
+  const handleClose = () => {
+    alert('Payment closed');
+  };
+
+  const addItemsToOrder = async (orderId: string) => {
+    const orderItemsPromises =
+      cart?.map((item) => {
+        return databases.createDocument(
+          import.meta.env.VITE_DATABASE_ID,
+          import.meta.env.VITE_ORDERITEMS_COLLECTION_ID,
+          ID.unique(),
+          {
+            orderId: orderId,
+            productId: item.$id,
+            quantity: quantity[item.$id],
+            unitPrice: item.price,
+          }
+        );
+      }) ?? [];
+
+    await Promise.all(orderItemsPromises);
+  };
+
+  const createOrder = async () => {
+    const order = await databases.createDocument(
+      import.meta.env.VITE_DATABASE_ID,
+      import.meta.env.VITE_ORDERS_COLLECTION_ID,
+      ID.unique(),
+      {
+        userId: userDetails?.id as string,
+        orderDate: new Date().toISOString(),
+        total: discount > 0 ? cartTotal * (1 - discount) : cartTotal,
+        discount: discount,
+        status: 'pending',
+      }
+    );
+    return order.$id;
+  };
+
+  const emptyCart = () => {
+    localStorage.removeItem('cartItems');
+  };
+
+  const handleSuccess = async () => {
+    if (cart?.length === 0) return;
+
+    const orderId = await createOrder();
+    await addItemsToOrder(orderId as string);
+    emptyCart();
+    window.location.href = '/orders';
+  };
+
+  const componentProps = {
+    ...config,
+    text: 'Checkout',
+    onSuccess: handleSuccess,
+    onClose: handleClose,
+  };
+
   return (
     <DefaultLayout>
       <div className="max-w-7xl mx-auto">
@@ -137,9 +238,19 @@ const Cart = () => {
                       Apply
                     </button>
                   </div>
-                  <button className="bg-black hover:bg-transparent text-white hover:text-black rounded-full w-full py-4 border-2 border-black duration-300">
-                    Checkout
-                  </button>
+                  <PaystackConsumer
+                    {...componentProps}
+                    email={userDetails?.email || ''}>
+                    {({ initializePayment }) => (
+                      <button
+                        onClick={() =>
+                          initializePayment(handleSuccess, handleClose)
+                        }
+                        className="bg-black hover:bg-transparent text-white hover:text-black rounded-full w-full py-4 border-2 border-black duration-300">
+                        Checkout
+                      </button>
+                    )}
+                  </PaystackConsumer>
                 </div>
               </div>
             )}

@@ -69,6 +69,7 @@ const ProductPage = () => {
                       index: Key | null | undefined
                     ) => (
                       <div
+                        key={index}
                         className={`h-[106px] lg:h-[150px] cursor-pointer rounded-2xl duration-100 ${
                           imageNo === index && 'border-2 border-black'
                         }`}>

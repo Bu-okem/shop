@@ -67,14 +67,16 @@ const Footer = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 lg:gap-x-9">
-            {gridColumns.map((column) => (
-              <div className="">
+            {gridColumns.map((column, index) => (
+              <div className="" key={index}>
                 <h4 className="uppercase font-bold tracking-[3px] mb-4">
                   {column.heading}
                 </h4>
                 <div className="flex flex-col gap-3">
-                  {column.items.map((item) => (
-                    <p className="text-gray-500 capitalize cursor-pointer">
+                  {column.items.map((item, index) => (
+                    <p
+                      className="text-gray-500 capitalize cursor-pointer"
+                      key={index}>
                       {item}
                     </p>
                   ))}
@@ -88,8 +90,8 @@ const Footer = () => {
             Shop.co © 2000-2023, All Rights Reserved
           </p>
           <div className="flex justify-center">
-            {paymentOptions.map((option) => (
-              <img src={option} alt="" />
+            {paymentOptions.map((option, index) => (
+              <img src={option} alt="" key={index} />
             ))}
           </div>
         </div>
