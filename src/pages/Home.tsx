@@ -1,12 +1,32 @@
+import { useState, useEffect } from 'react';
+import { Models } from 'appwrite';
+
+import { getProducts } from '../lib/functions';
+import { slugify } from '../lib/utils';
+
 import DefaultLayout from '../layouts/DefaultLayout';
 
 import ProductCard from '../components/ProductCard';
 
 import HeroImageMobile from '../assets/images/hero-image-mobile.png';
 import HeroImage from '../assets/images/hero-image.png';
-import ProductImage from '../assets/images/jean-trousers.png';
 
 const Home = () => {
+  const [products, setProducts] = useState<
+    Models.Document[] | undefined | null
+  >(null);
+  const fetchProducts = async () => {
+    try {
+      const product = await getProducts();
+      setProducts(product);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
   return (
     <DefaultLayout>
       {/* HERO */}
@@ -20,7 +40,11 @@ const Home = () => {
             designed to bring out your individuality and cater to your sense of
             style.
           </p>
-          <button className="bg-black lg:hover:bg-transparent text-white lg:hover:text-black rounded-full w-full lg:w-52 py-4 border-2 border-black duration-300">
+          <button
+            onClick={() => {
+              window.location.href = '/shop';
+            }}
+            className="bg-black lg:hover:bg-transparent text-white lg:hover:text-black rounded-full w-full lg:w-52 py-4 border-2 border-black duration-300">
             Shop Now
           </button>
         </div>
@@ -35,30 +59,15 @@ const Home = () => {
           Products
         </h2>
         <div className="p-4 grid grid-cols-2 lg:grid-cols-4 gap-y-4 justify-items-center">
-          <ProductCard
-            image={ProductImage}
-            name="Product Name"
-            price="3000"
-            link="/product"
-          />
-          <ProductCard
-            image={ProductImage}
-            name="Product Name That is Long"
-            price="3000"
-            link="/product"
-          />
-          <ProductCard
-            image={ProductImage}
-            name="Product Name"
-            price="3000"
-            link="/product"
-          />
-          <ProductCard
-            image={ProductImage}
-            name="Product Name"
-            price="3000"
-            link="/product"
-          />
+          {products?.map((product, index) => (
+            <ProductCard
+              key={index}
+              image={product.imageUrls[0]}
+              name={product.title}
+              price={product.price}
+              link={`/${slugify(product.title)}-${product.$id}`}
+            />
+          ))}
         </div>
       </section>
     </DefaultLayout>
