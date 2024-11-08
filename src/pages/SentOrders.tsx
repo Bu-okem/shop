@@ -38,6 +38,7 @@ const SentOrders = () => {
               ...orderItem,
               status: item.status,
               date: formatDate(item.$createdAt),
+              orderId: item.$id,
             }))
           ) ?? [];
       setLoading(false);
@@ -51,7 +52,7 @@ const SentOrders = () => {
   {
       image: order.productId.imageUrls[0],
       name: order.productId.title,
-      orderId: '#123456789',
+      orderId: order.orderId,
       status: order.status,
       date: order.date,
     },
@@ -102,7 +103,7 @@ const SentOrders = () => {
               key={index}
               image={order.productId.imageUrls[0]}
               name={order.productId.title}
-              orderId="#123456789"
+              orderId={`#${order.orderId}`}
               status={order.status}
               date={order.date}
             />
