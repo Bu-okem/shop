@@ -206,7 +206,7 @@ const Cart = () => {
                     </div>
                   ))}
                 </div>
-                <div className="p-4 rounded-2xl border border-[#F0F0F0] flex flex-col gap-5">
+                <div className="min-w-[323px] p-4 rounded-2xl border border-[#F0F0F0] flex flex-col gap-5">
                   <h4 className="text-xl font-bold">Order Summary</h4>
                   <div className="flex justify-between">
                     <p className="text-gray-600">Subtotal</p>
@@ -228,7 +228,7 @@ const Cart = () => {
                       ₦{addCommas(cartTotal - cartTotal * discount)}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  {/* <div className="flex gap-2">
                     <input
                       type="text"
                       placeholder="Add a promo code"
@@ -237,7 +237,7 @@ const Cart = () => {
                     <button className="w-[40%] max-w-[120px] bg-black hover:bg-transparent text-white hover:text-black rounded-full py-2 border-2 border-black duration-300">
                       Apply
                     </button>
-                  </div>
+                  </div> */}
                   <PaystackConsumer
                     {...componentProps}
                     email={userDetails?.email || ''}>
