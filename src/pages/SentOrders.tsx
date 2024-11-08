@@ -41,7 +41,7 @@ const SentOrders = () => {
             }))
           ) ?? [];
       setLoading(false);
-      setOrders(orderItems);
+      setOrders(orderItems.reverse());
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
