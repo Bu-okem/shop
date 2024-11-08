@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { account } from '../appwriteconfig';
 
 import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 
 const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,7 +21,7 @@ const Login = () => {
     const checkUser = async () => {
       const session = await account.getSession('current');
       if (session) {
-        navigate('/');
+        window.location.href = '/';
       }
     };
     checkUser();
@@ -33,7 +33,7 @@ const Login = () => {
     try {
       setLoading(true);
       await account.createEmailPasswordSession(user.email, user.password);
-      navigate('/', { replace: true });
+      window.location.href = '/';
       setLoading(false);
     } catch {
       setError('Invalid email or password');
