@@ -38,6 +38,7 @@ const CancelledOrders = () => {
               ...orderItem,
               status: item.status,
               date: formatDate(item.$createdAt),
+              orderId: item.$id,
             }))
           ) ?? [];
       setOrders(orderItems);
@@ -71,6 +72,7 @@ const CancelledOrders = () => {
           {orders.map(
             (
               order: {
+                orderId: string;
                 productId: { imageUrls: any[]; title: any };
                 status: string;
                 date: string;
@@ -81,7 +83,7 @@ const CancelledOrders = () => {
                 key={index}
                 image={order.productId.imageUrls[0]}
                 name={order.productId.title}
-                orderId="#123456789"
+                orderId={`#${order.orderId}`}
                 status={order.status}
                 date={order.date}
               />
