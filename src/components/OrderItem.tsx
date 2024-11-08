@@ -8,11 +8,13 @@ const OrderItem = ({ image, name, orderId, status, date }: any) => {
         <span
           className={`min-w-[80.4px]  text-white text-sm text-center font-medium w-fit px-2 py-[2px] rounded-lg ${
             status === 'delivered' && 'bg-green-500'
-          } ${status === 'pending' && 'bg-gray-500'} ${
-            status === 'cancelled' && 'bg-red-500'
-          }`}>
+          } 
+          ${status === 'pending' && 'bg-gray-500'} 
+          ${status === 'shipped' && 'bg-blue-500'} 
+          ${status === 'cancelled' && 'bg-red-500'}`}>
           {status === 'delivered' && 'Delivered'}
-          {status === 'pending' && 'In Transit'}
+          {status === 'pending' && 'Pending'}
+          {status === 'shipped' && 'Shipped'}
           {status === 'cancelled' && 'Cancelled'}
         </span>
         <p className="text-sm">{date}</p>
