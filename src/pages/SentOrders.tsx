@@ -1,28 +1,97 @@
-import OrderItem from '../components/OrderItem';
+import { useEffect, useState } from 'react';
+import { getOrdersByUser, getUserDetails } from '../lib/functions';
+import { formatDate } from '../lib/utils';
 
-import ProductImage from '../assets/images/jean-trousers.png';
-import ProductImage2 from '../assets/images/jean-shorts.png';
+import OrderItem from '../components/OrderItem';
+import LoadingPage from '../components/LoadingPage';
 
 const SentOrders = () => {
-  const orders: any = [
-    {
-      image: ProductImage,
-      name: 'Jean Trousers',
+  // const orderItems: any[] = [];
+  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState<any>([]);
+  const [userDetails, setUserDetails] = useState<
+    | {
+        id: string;
+        name: string;
+        email: string;
+      }
+    | undefined
+  >(undefined);
+
+  const fetchUserDetails = async () => {
+    try {
+      const details = await getUserDetails();
+      setUserDetails(details);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
+
+  const getOrders = async () => {
+    try {
+      const res = await getOrdersByUser(userDetails?.id as string);
+      const orderItems =
+        res
+          ?.filter((item) => item.status !== 'cancelled')
+          .flatMap((item) =>
+            item.orderItems.map((orderItem: any) => ({
+              ...orderItem,
+              status: item.status,
+              date: formatDate(item.$createdAt),
+            }))
+          ) ?? [];
+      setLoading(false);
+      setOrders(orderItems);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  /*
+  {
+      image: order.productId.imageUrls[0],
+      name: order.productId.title,
       orderId: '#123456789',
-      status: 'delivered',
-      date: '20/08/2024',
+      status: order.status,
+      date: order.date,
     },
-    {
-      image: ProductImage2,
-      name: 'Jean Shorts',
-      orderId: '#123456789',
-      status: 'pending',
-      date: '20/08/2024',
-    },
-  ];
+  */
+
+  // const getOrders = async () => {
+  //   try {
+  //     const res = await getOrdersByUser(userDetails?.id as string);
+  //     res?.filter((item) => item.status !== 'cancelled').map((item) => {
+  //       if (item.status !== 'cancelled') {
+  //         item.orderItems.map((orderItem: any) => ({
+  //           ...orderItem,
+  //           status: item.status,
+  //         }));
+  //         orderItems.push(item.orderItems);
+  //       }
+  //     });
+  //     setOrders(orderItems.flat());
+  //     console.log(orderItems.flat());
+  //   } catch (error) {
+  //     console.error('Error fetching orders:', error);
+  //   }
+  // };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  useEffect(() => {
+    if (userDetails) {
+      getOrders();
+    }
+  }, [userDetails]);
   return (
     <>
-      {orders.length === 0 ? (
+      {loading ? (
+        <div className="h-[30vh] w-full flex justify-center items-center">
+          <LoadingPage />
+        </div>
+      ) : orders.length === 0 ? (
         <div className="h-[40vh] flex items-center justify-center">
           <p className="text-center text-gray-500">No orders found</p>
         </div>
@@ -31,9 +100,9 @@ const SentOrders = () => {
           {orders.map((order: any, index: number) => (
             <OrderItem
               key={index}
-              image={order.image}
-              name={order.name}
-              orderId={order.orderId}
+              image={order.productId.imageUrls[0]}
+              name={order.productId.title}
+              orderId="#123456789"
               status={order.status}
               date={order.date}
             />

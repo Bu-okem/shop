@@ -18,3 +18,13 @@ export const deslugify = (str: string) => {
 export const addCommas = (num: number): string => {
   return num.toLocaleString();
 };
+
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const formattedDate = date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+  return formattedDate;
+};

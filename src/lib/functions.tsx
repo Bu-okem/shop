@@ -1,4 +1,4 @@
-import { Databases } from 'appwrite';
+import { Databases, Query } from 'appwrite';
 
 import { account, client } from '../appwriteconfig';
 
@@ -6,6 +6,8 @@ const database = new Databases(client);
 
 const Database_ID = import.meta.env.VITE_DATABASE_ID;
 const Products_Collection_ID = import.meta.env.VITE_PRODUCTS_COLLECTION_ID;
+const Orders_Collection_ID = import.meta.env.VITE_ORDERS_COLLECTION_ID;
+const Order_Item_Collection_ID = import.meta.env.VITE_ORDERITEMS_COLLECTION_ID;
 export const getUserDetails = async () => {
   try {
     let response = await account.get();
@@ -44,6 +46,32 @@ export const getProductById = async (id: string) => {
       id
     );
     return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getOrdersByUser = async (userId: string) => {
+  try {
+    let response = await database.listDocuments(
+      Database_ID,
+      Orders_Collection_ID,
+      [Query.equal('userId', userId)]
+    );
+    return response.documents;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getOrderItems = async (orderId: string) => {
+  try {
+    let response = await database.listDocuments(
+      Database_ID,
+      Order_Item_Collection_ID,
+      [Query.equal('orderId', orderId)]
+    );
+    return response.documents;
   } catch (error) {
     console.error(error);
   }

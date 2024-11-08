@@ -16,8 +16,17 @@ import LoadingPage from '../components/LoadingPage';
  * @returns The JSX element representing the Orders page.
  */
 const Orders = () => {
-  const [activeTab, setActiveTab] = useState('sent');
-  const [loading, setLoading] = useState(false);
+  const url = new URL(window.location.href);
+  const orderTab = () => {
+    if (url.pathname.includes('cancelled')) {
+      return 'cancelled';
+    } else {
+      return 'sent';
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState(orderTab);
+  const [loading, _] = useState(false);
   return (
     <DefaultLayout>
       <div className="max-w-7xl mx-auto">
@@ -52,7 +61,7 @@ const Orders = () => {
                 Cancelled
               </Link>
             </div>
-            <div className="py-2 min-h-[40vh]">
+            <div className="py-2">
               <Outlet />
             </div>
           </div>
