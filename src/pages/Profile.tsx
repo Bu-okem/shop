@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import DefaultLayout from '../layouts/DefaultLayout';
 import LoadingPage from '../components/LoadingPage';
@@ -45,11 +45,11 @@ const Profile = () => {
                 </h3>
               </div>
             </div>
-            <div className="p-4 hidden lg:block">
+            {/* <div className="p-4 hidden lg:block">
               <Link to="/orders" className="hover:underline">
                 Orders
               </Link>
-            </div>
+            </div> */}
           </>
         )}
       </div>

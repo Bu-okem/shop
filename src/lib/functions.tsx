@@ -8,6 +8,23 @@ const Database_ID = import.meta.env.VITE_DATABASE_ID;
 const Products_Collection_ID = import.meta.env.VITE_PRODUCTS_COLLECTION_ID;
 const Orders_Collection_ID = import.meta.env.VITE_ORDERS_COLLECTION_ID;
 const Order_Item_Collection_ID = import.meta.env.VITE_ORDERITEMS_COLLECTION_ID;
+
+export const logoutUser = () => {
+  //delete session
+  const deleteSession = account.deleteSession('current');
+
+  deleteSession.then(
+    function () {
+      //delete cart from localstorage
+      localStorage.clear();
+      window.location.href = '/login';
+    },
+    function (error) {
+      console.log(error);
+    }
+  );
+};
+
 export const getUserDetails = async () => {
   try {
     let response = await account.get();
