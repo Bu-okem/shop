@@ -8,6 +8,7 @@ const Database_ID = import.meta.env.VITE_DATABASE_ID;
 const Products_Collection_ID = import.meta.env.VITE_PRODUCTS_COLLECTION_ID;
 const Orders_Collection_ID = import.meta.env.VITE_ORDERS_COLLECTION_ID;
 const Order_Item_Collection_ID = import.meta.env.VITE_ORDERITEMS_COLLECTION_ID;
+const Discount_Collection_ID = import.meta.env.VITE_DISCOUNTCODE_COLLECTION_ID;
 
 export const logoutUser = () => {
   //delete session
@@ -87,6 +88,19 @@ export const getOrderItems = async (orderId: string) => {
       Database_ID,
       Order_Item_Collection_ID,
       [Query.equal('orderId', orderId)]
+    );
+    return response.documents;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const checkDiscountCode = async (code: string) => {
+  try {
+    let response = await database.listDocuments(
+      Database_ID,
+      Discount_Collection_ID,
+      [Query.equal('code', code)]
     );
     return response.documents;
   } catch (error) {

@@ -10,7 +10,9 @@ import { databases } from '../appwriteconfig';
 import CartContext from '../contexts/CartContext';
 
 import { addCommas } from '../lib/utils';
-import { getUserDetails } from '../lib/functions';
+import { getUserDetails, checkDiscountCode } from '../lib/functions';
+
+import { LoaderCircle } from 'lucide-react';
 
 interface CartItem {
   $id: number;
@@ -32,6 +34,9 @@ const Cart = () => {
       }
     | undefined
   >(undefined);
+  const [discountCode, setDiscountCode] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState('');
 
   const fetchUserDetails = async () => {
     try {
@@ -53,6 +58,27 @@ const Cart = () => {
     title: item.title,
     price: item.price,
   }));
+
+  const checkCode = async (code: string) => {
+    if (code === '') {
+      setDiscount(0);
+      setCouponError('');
+      return;
+    }
+    setCouponLoading(true);
+    const res = await checkDiscountCode(code.toLowerCase());
+    if (res?.length === 0) {
+      setDiscount(0);
+      setCouponLoading(false);
+      setCouponError('Invalid code');
+      return;
+    } else {
+      const couponObject = res?.[0];
+      setCouponLoading(false);
+      setCouponError('');
+      setDiscount(couponObject?.discount);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -228,16 +254,28 @@ const Cart = () => {
                       ₦{addCommas(cartTotal - cartTotal * discount)}
                     </p>
                   </div>
-                  {/* <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Add a promo code"
-                      className="bg-[#F0F0F0] rounded-full w-full px-4 py-2 focus-within:outline-black"
-                    />
-                    <button className="w-[40%] max-w-[120px] bg-black hover:bg-transparent text-white hover:text-black rounded-full py-2 border-2 border-black duration-300">
-                      Apply
-                    </button>
-                  </div> */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        onChange={(e) => setDiscountCode(e.target.value)}
+                        type="text"
+                        placeholder="Add a promo code"
+                        className="bg-[#F0F0F0] rounded-full w-full px-4 py-2 focus-within:outline-black"
+                      />
+                      <button
+                        onClick={() => checkCode(discountCode)}
+                        className="flex items-center justify-center w-[40%] max-w-[120px] bg-black hover:bg-transparent text-white hover:text-black rounded-full py-2 border-2 border-black duration-300">
+                        {couponLoading ? (
+                          <LoaderCircle className="animate-spin" />
+                        ) : (
+                          'Apply'
+                        )}
+                      </button>
+                    </div>
+                    {couponError && (
+                      <p className="text-sm text-red-500">{couponError}</p>
+                    )}
+                  </div>
                   <PaystackConsumer
                     {...componentProps}
                     email={userDetails?.email || ''}>
